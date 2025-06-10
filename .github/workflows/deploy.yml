@@ -29,6 +29,6 @@ jobs:
         uses: JamesIves/github-pages-deploy-action@v4
         with:
           # The branch the action should deploy to.
-          branch: gh-pages
+          branch: main
           # The folder the action should deploy.
           folder: build/web
