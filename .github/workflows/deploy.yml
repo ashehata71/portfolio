@@ -1,5 +1,11 @@
 name: Deploy Flutter Portfolio to GitHub Pages
 
+# Allow this job to clone the repo and create a page deployment
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
 on:
   # Trigger the workflow every time you push to the `main` branch
   push:
@@ -7,7 +13,8 @@ on:
       - main
 
 jobs:
-  build_and_deploy:
+  # Build job
+  build:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout 🛎️
@@ -16,19 +23,30 @@ jobs:
       - name: Setup Flutter 🐦
         uses: subosito/flutter-action@v2
         with:
-          channel: 'stable' # or 'beta' or 'dev'
+          channel: 'stable'
 
       - name: Install dependencies 📦
         run: flutter pub get
 
       - name: Build for web ⚙️
-        # IMPORTANT: Replace <repository-name> with the name of your GitHub repository
-        run: flutter build web --release --base-href /ashehata71/portfolio/
+        # This command is now updated with your repository name
+        run: flutter build web --release --base-href /portfolio/
 
-      - name: Deploy 🚀
-        uses: JamesIves/github-pages-deploy-action@v4
+      - name: Upload artifact 📦
+        # Automatically uploads an artifact from the build folder
+        uses: actions/upload-pages-artifact@v3
         with:
-          # The branch the action should deploy to.
-          branch: main
-          # The folder the action should deploy.
-          folder: build/web
+          path: ./build/web
+
+  # Deployment job
+  deploy:
+    # Add a dependency to the build job
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages 🚀
+        id: deployment
+        uses: actions/deploy-pages@v4
