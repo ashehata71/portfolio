@@ -11,6 +11,7 @@ class SkillsSection extends StatelessWidget {
     final skills = {
       'Flutter & Dart': 0.9,
       'BLOC/Provider/GetX': 0.85,
+      'Modular Design (Melos, flutter_modular)': 0.85,
       'Clean Architecture': 0.9,
       'Kotlin (Android)': 0.7,
       'Swift (iOS)': 0.6,

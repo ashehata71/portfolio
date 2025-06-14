@@ -50,9 +50,8 @@ class ProjectsSection extends StatelessWidget {
             description: 'Loyalty rewards app for Al Tijari Bank.',
             tech: const [
               'Flutter',
-              'Firebase',
               'Clean Architecture',
-              'Provider & GetX',
+              'Provider',
             ],
             googlePlayOnPressed: () {
               launchURLByURL(
