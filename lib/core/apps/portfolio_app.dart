@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:portfolio/presentation/widgets/sections/about_section.dart';
+import 'package:portfolio/presentation/widgets/sections/certificates_section.dart';
 import 'package:portfolio/presentation/widgets/sections/contact_section.dart';
 import 'package:portfolio/presentation/widgets/sections/experience_section.dart';
 import 'package:portfolio/presentation/widgets/sections/hero_section.dart';
@@ -22,7 +23,7 @@ class _PortfolioHomePageState extends State<PortfolioHomePage> {
   final Map<String, GlobalKey> _sectionKeys = {};
   final ScrollController _scrollController = ScrollController();
 
-  final List<String> sectionNames = ['hero', 'about', 'skills', 'experience', 'projects', 'contact'];
+  final List<String> sectionNames = ['hero', 'about', 'skills', 'experience', 'projects','certificates', 'contact'];
 
   @override
   void initState() {
@@ -144,6 +145,10 @@ class _PortfolioHomePageState extends State<PortfolioHomePage> {
             _buildAnimatedSection(
               'projects',
               const ProjectsSection(),
+            ),
+            _buildAnimatedSection(
+              'certificates',
+              CertificatesSection(),
             ),
             _buildAnimatedSection(
               'contact',
