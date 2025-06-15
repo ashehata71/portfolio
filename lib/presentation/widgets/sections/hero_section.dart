@@ -123,7 +123,7 @@ class _HeroSectionState extends State<HeroSection> {
                 ),
                 IconButton(
                   icon: const FaIcon(FontAwesomeIcons.linkedinIn, color: Color(0xFF8892B0)),
-                  onPressed: () => widget.onLaunch('www.linkedin.com/in/ahmed-yasser-7a7a40160'),
+                  onPressed: () => widget.onLaunch('https://www.linkedin.com/in/ahmed-yasser-7a7a40160/'),
                   hoverColor: const Color(0xFF64FFDA).withOpacity(0.1),
                 ),
               ],
