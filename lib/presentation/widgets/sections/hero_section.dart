@@ -76,7 +76,7 @@ class _HeroSectionState extends State<HeroSection> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             const Text(
-              'Hi, my name is',
+              'Hello, my name is',
               style: TextStyle(color: Color(0xFF64FFDA), fontSize: 16),
             ),
             const SizedBox(height: 16),
@@ -99,7 +99,7 @@ class _HeroSectionState extends State<HeroSection> {
             ),
             const SizedBox(height: 24),
             Text(
-              'I\'m a Flutter Developer with 4+ years of experience, specializing in building exceptional and high-performance mobile applications.',
+              'I\'m a Mobile Application Developer with 5+ years of experience, specializing in building exceptional and high-performance mobile applications.',
               textAlign: isWideScreen ? TextAlign.start : TextAlign.center,
               style: const TextStyle(
                 fontSize: 16,
@@ -114,17 +114,24 @@ class _HeroSectionState extends State<HeroSection> {
                 IconButton(
                   icon: const FaIcon(FontAwesomeIcons.phone, color: Color(0xFF8892B0)),
                   onPressed: () => widget.onLaunch('tel:+201550819605'),
-                  hoverColor: const Color(0xFF64FFDA).withOpacity(0.1),
+                  hoverColor: const Color(0xFF64FFDA).withValues(alpha: 0.1),
+                ),
+                IconButton(
+                  icon: const FaIcon(FontAwesomeIcons.whatsapp, color: Color(0xFF8892B0)),
+                  onPressed: () => widget.onLaunch(
+                    'https://wa.me/201550819605'
+                  ),
+                  hoverColor: const Color(0xFF64FFDA).withValues(alpha: 0.1),
                 ),
                 IconButton(
                   icon: const FaIcon(FontAwesomeIcons.github, color: Color(0xFF8892B0)),
                   onPressed: () => widget.onLaunch('https://github.com/ashehata71'),
-                  hoverColor: const Color(0xFF64FFDA).withOpacity(0.1),
+                  hoverColor: const Color(0xFF64FFDA).withValues(alpha: 0.1),
                 ),
                 IconButton(
                   icon: const FaIcon(FontAwesomeIcons.linkedinIn, color: Color(0xFF8892B0)),
                   onPressed: () => widget.onLaunch('https://www.linkedin.com/in/ahmed-yasser-7a7a40160/'),
-                  hoverColor: const Color(0xFF64FFDA).withOpacity(0.1),
+                  hoverColor: const Color(0xFF64FFDA).withValues(alpha: 0.1),
                 ),
               ],
             )

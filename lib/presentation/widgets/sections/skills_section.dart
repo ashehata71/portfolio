@@ -8,18 +8,19 @@ class SkillsSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // Adjusted to realistic levels — 100% across the board looks flat and unconvincing
     final skills = {
-      'Flutter & Dart': 0.9,
-      'BLOC/Provider/GetX': 0.85,
-      'Modular Design (Melos, flutter_modular)': 0.85,
-      'Clean Architecture': 0.9,
-      'Kotlin (Android)': 0.7,
-      'Swift (iOS)': 0.6,
-      'Firebase': 0.8,
-      'CI/CD (Jenkins/GitHub Actions)': 0.75,
+      'Flutter & Dart': 0.95,
+      'BLoC / Provider': 0.90,
+      'Clean Architecture': 0.90,
+      'Modular Design (Melos)': 0.85,
+      'Firebase': 0.80,
+      'CI/CD': 0.80,
+      'Kotlin (Android)': 0.70,
+      'Swift (iOS)': 0.50,
     };
 
-    bool isWideScreen = MediaQuery.of(context).size.width > 768;
+    final isWideScreen = MediaQuery.of(context).size.width > 768;
 
     Widget content;
 
@@ -34,18 +35,18 @@ class SkillsSection extends StatelessWidget {
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
-              children: firstHalf.map((entry) {
-                return SkillBar(name: entry.key, level: entry.value, isVisible: isVisible);
-              }).toList(),
+              children: firstHalf
+                  .map((e) => SkillBar(name: e.key, level: e.value, isVisible: isVisible))
+                  .toList(),
             ),
           ),
           const SizedBox(width: 40),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
-              children: secondHalf.map((entry) {
-                return SkillBar(name: entry.key, level: entry.value, isVisible: isVisible);
-              }).toList(),
+              children: secondHalf
+                  .map((e) => SkillBar(name: e.key, level: e.value, isVisible: isVisible))
+                  .toList(),
             ),
           ),
         ],
@@ -53,15 +54,12 @@ class SkillsSection extends StatelessWidget {
     } else {
       content = Column(
         crossAxisAlignment: CrossAxisAlignment.start,
-        children: skills.entries.map((entry) {
-          return SkillBar(name: entry.key, level: entry.value, isVisible: isVisible);
-        }).toList(),
+        children: skills.entries
+            .map((e) => SkillBar(name: e.key, level: e.value, isVisible: isVisible))
+            .toList(),
       );
     }
 
-    return SectionWrapper(
-      title: 'Skills',
-      child: content,
-    );
+    return SectionWrapper(title: 'Skills', child: content);
   }
 }

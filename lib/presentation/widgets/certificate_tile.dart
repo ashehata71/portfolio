@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 
 class CertificateTile extends StatefulWidget {
+  final String title;
   final String issuer;
   final String img;
 
   const CertificateTile({
     super.key,
+    required this.title,
     required this.issuer,
     required this.img,
   });
@@ -14,7 +16,8 @@ class CertificateTile extends StatefulWidget {
   State<CertificateTile> createState() => _CertificateTileState();
 }
 
-class _CertificateTileState extends State<CertificateTile> with SingleTickerProviderStateMixin{
+class _CertificateTileState extends State<CertificateTile>
+    with SingleTickerProviderStateMixin {
   late AnimationController _controller;
   late Animation<double> _scaleAnimation;
 
@@ -36,7 +39,6 @@ class _CertificateTileState extends State<CertificateTile> with SingleTickerProv
     super.dispose();
   }
 
-
   @override
   Widget build(BuildContext context) {
     return MouseRegion(
@@ -51,18 +53,37 @@ class _CertificateTileState extends State<CertificateTile> with SingleTickerProv
           child: Card(
             color: const Color(0xFF112240),
             elevation: 4,
-            shadowColor: Colors.black.withOpacity(0.5),
+            shadowColor: Colors.black54,
             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
             child: Padding(
               padding: const EdgeInsets.all(20.0),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Image.asset(widget.img),
-                  const SizedBox(height: 20),
+                  // Certificate title
+                  Text(
+                    widget.title,
+                    style: const TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                      color: Color(0xFFCCD6F6),
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+                  // Certificate image
+                  ClipRRect(
+                    borderRadius: BorderRadius.circular(4),
+                    child: Image.asset(widget.img),
+                  ),
+                  const SizedBox(height: 16),
+                  // Issuer & year
                   Text(
                     widget.issuer,
-                    style: const TextStyle(height: 1.5, color: Color(0xFF8892B0), fontStyle: FontStyle.italic),
+                    style: const TextStyle(
+                      height: 1.5,
+                      color: Color(0xFF8892B0),
+                      fontStyle: FontStyle.italic,
+                    ),
                   ),
                 ],
               ),

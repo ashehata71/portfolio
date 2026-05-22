@@ -12,26 +12,36 @@ class ContactSection extends StatelessWidget {
       child: Center(
         child: Column(
           children: [
-            Text('What\'s Next?', style: TextStyle(color: Color(0xFF64FFDA), fontSize: 16)),
-            const SizedBox(height: 16),
-            Text('Get In Touch',
-                style: Theme.of(context).textTheme.headlineMedium?.copyWith(color: const Color(0xFFCCD6F6))),
+            const Text(
+              'What\'s Next?',
+              style: TextStyle(color: Color(0xFF64FFDA), fontSize: 16),
+            ),
             const SizedBox(height: 16),
             Text(
-              'Although I’m not currently looking for any new opportunities, my inbox is always open. Whether you have a question or just want to say hi, I’ll try my best to get back to you!',
+              'Get In Touch',
+              style: Theme.of(context)
+                  .textTheme
+                  .headlineMedium
+                  ?.copyWith(color: const Color(0xFFCCD6F6)),
+            ),
+            const SizedBox(height: 16),
+            const Text(
+              'I\'m always open to new opportunities, collaborations, or just a good conversation about mobile development. '
+                  'Whether you have a project in mind or want to say hi — my inbox is open!',
               textAlign: TextAlign.center,
               style: TextStyle(fontSize: 16, height: 1.5, color: Color(0xFF8892B0)),
             ),
             const SizedBox(height: 32),
             ElevatedButton(
-              child: Text('Say Hello', style: TextStyle(color: Color(0xFF64FFDA))),
               onPressed: () => onLaunch('mailto:ahmed.fcis2016@gmail.com'),
               style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.transparent,
-                  padding: EdgeInsets.symmetric(horizontal: 32, vertical: 16),
-                  side: BorderSide(color: Color(0xFF64FFDA), width: 1),
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8))),
-            )
+                backgroundColor: Colors.transparent,
+                padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
+                side: const BorderSide(color: Color(0xFF64FFDA), width: 1),
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+              ),
+              child: const Text('Say Hello', style: TextStyle(color: Color(0xFF64FFDA))),
+            ),
           ],
         ),
       ),
