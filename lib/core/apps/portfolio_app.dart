@@ -146,31 +146,6 @@ class _PortfolioHomePageState extends State<PortfolioHomePage> {
                 child: Text(item['label']!),
               ),
             )),
-
-          // Resume button
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 10),
-            child: ElevatedButton.icon(
-              icon: const Icon(Icons.download_rounded, size: 18, color: Color(0xFF0A192F)),
-              label: const Text('Resume', style: TextStyle(color: Color(0xFF0A192F))),
-              onPressed: () async {
-                const resumeUrl =
-                    'https://drive.google.com/file/d/1ntxBV6yVNhYmbF5qo3VvAzPLqvcwAdwi/view?usp=sharing';
-                try {
-                  await launchURLByURL(resumeUrl);
-                } catch (_) {
-                  if (!mounted) return;
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('Could not open resume.')),
-                  );
-                }
-              },
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.white,
-                shape: BeveledRectangleBorder(borderRadius: BorderRadius.circular(8)),
-              ),
-            ),
-          ),
         ],
       ),
       // Hamburger drawer on narrow screens
