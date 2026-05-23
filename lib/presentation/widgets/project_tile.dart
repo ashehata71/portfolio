@@ -47,8 +47,8 @@ class ProjectTile extends StatelessWidget {
                     children: [
                       if (googlePlayOnPressed != null)
                         IconButton(
-                          icon: const FaIcon(
-                            FontAwesomeIcons.googlePlay,
+                          icon: Icon(
+                            FontAwesomeIcons.googlePlay.data,
                             size: 20,
                             color: Color(0xFF8892B0),
                           ),
@@ -58,8 +58,8 @@ class ProjectTile extends StatelessWidget {
                         ),
                       if (appStoreOnPressed != null)
                         IconButton(
-                          icon: const FaIcon(
-                            FontAwesomeIcons.appStore,
+                          icon: Icon(
+                            FontAwesomeIcons.appStore.data,
                             color: Color(0xFF8892B0),
                           ),
                           onPressed: appStoreOnPressed,
