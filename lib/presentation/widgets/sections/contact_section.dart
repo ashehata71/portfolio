@@ -61,7 +61,7 @@ class ContactSection extends StatelessWidget {
             label: 'LinkedIn',
             value: 'linkedin.com/in/ahmed-yasser',
             onTap: () => onLaunch(
-              'https://www.linkedin.com/in/ahmed-yasser-7a7a40160/',
+              'https://www.linkedin.com/in/ahmed-shehata-7a7a40160/',
             ),
             isLast: true,
           ),
