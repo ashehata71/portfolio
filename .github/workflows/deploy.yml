@@ -30,7 +30,7 @@ jobs:
 
       - name: Build for web ⚙️
         # This command is now updated with your repository name
-        run: flutter build web --release --base-href /portfolio/
+        run: flutter build web --release --base-href /portfolio/ --web-renderer canvaskit --no-tree-shake-icons
 
       - name: Upload artifact 📦
         # Automatically uploads an artifact from the build folder
