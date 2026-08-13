@@ -29,7 +29,7 @@ jobs:
         run: flutter pub get
 
       - name: Build for web ⚙️
-        run: flutter build web --release --base-href "/portfolio/" --no-tree-shake-icons
+        run: flutter build web --release --base-href "/portfolio/" --web-renderer canvaskit
 
       - name: Upload artifact 📦
         # Automatically uploads an artifact from the build folder
