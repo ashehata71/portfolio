@@ -1,65 +1,130 @@
 import 'package:flutter/material.dart';
+import 'package:portfolio/core/motion/motion.dart';
+import 'package:portfolio/core/theme/app_dimens.dart';
+import 'package:portfolio/core/theme/portfolio_tokens.dart';
+import 'package:portfolio/presentation/widgets/mono_tag.dart';
 import 'package:portfolio/presentation/widgets/section_wrapper.dart';
-import 'package:portfolio/presentation/widgets/skill_bar.dart';
 
+/// The stack, grouped exactly as the CV groups it.
+///
+/// This replaced a set of percentage bars. Percentages were the one piece of
+/// invented data on the page — no CV claims 85% Melos — and a bar chart of
+/// self-assessed skill is the most templated component in the genre. Named
+/// groups of mono tags are honest and read as a manifest, which is the
+/// vocabulary the rest of the page speaks.
 class SkillsSection extends StatelessWidget {
-  final bool isVisible;
   const SkillsSection({super.key, required this.isVisible});
+
+  final bool isVisible;
+
+  static const Map<String, List<String>> _groups = <String, List<String>>{
+    'Languages & frameworks': <String>[
+      'Flutter',
+      'Dart',
+      'Kotlin (Android)',
+      'Swift (iOS)',
+    ],
+    'Architecture & state': <String>[
+      'Clean Architecture',
+      'BLoC',
+      'Provider',
+      'GetX',
+      'Modular design (Melos)',
+    ],
+    'Tools & platforms': <String>[
+      'Firebase',
+      'CI/CD (Fastlane)',
+      'Git',
+      'Crowdin',
+      'OCR SDK integration',
+    ],
+  };
 
   @override
   Widget build(BuildContext context) {
-    // Adjusted to realistic levels — 100% across the board looks flat and unconvincing
-    final skills = {
-      'Flutter & Dart': 0.95,
-      'BLoC / Provider': 0.90,
-      'Clean Architecture': 0.90,
-      'Modular Design (Melos)': 0.85,
-      'Firebase': 0.80,
-      'CI/CD': 0.80,
-      'Kotlin (Android)': 0.70,
-      'Swift (iOS)': 0.50,
-    };
+    final List<MapEntry<String, List<String>>> entries =
+        _groups.entries.toList(growable: false);
 
-    final isWideScreen = MediaQuery.of(context).size.width > 768;
-
-    Widget content;
-
-    if (isWideScreen) {
-      final half = (skills.length / 2).ceil();
-      final firstHalf = skills.entries.take(half);
-      final secondHalf = skills.entries.skip(half);
-
-      content = Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: firstHalf
-                  .map((e) => SkillBar(name: e.key, level: e.value, isVisible: isVisible))
-                  .toList(),
+    return SectionWrapper(
+      title: 'Stack',
+      isVisible: isVisible,
+      child: StaggeredGroup(
+        play: isVisible,
+        initialDelay: const Duration(milliseconds: 180),
+        stagger: const Duration(milliseconds: 120),
+        children: <Widget>[
+          for (final MapEntry<String, List<String>> group in entries)
+            Padding(
+              padding: const EdgeInsets.only(bottom: AppDimens.spaceXl),
+              child: _StackGroup(
+                label: group.key,
+                items: group.value,
+                isVisible: isVisible,
+              ),
             ),
-          ),
-          const SizedBox(width: 40),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: secondHalf
-                  .map((e) => SkillBar(name: e.key, level: e.value, isVisible: isVisible))
-                  .toList(),
-            ),
-          ),
         ],
-      );
-    } else {
-      content = Column(
+      ),
+    );
+  }
+}
+
+class _StackGroup extends StatelessWidget {
+  const _StackGroup({
+    required this.label,
+    required this.items,
+    required this.isVisible,
+  });
+
+  final String label;
+  final List<String> items;
+  final bool isVisible;
+
+  @override
+  Widget build(BuildContext context) {
+    final PortfolioTokens tokens = context.tokens;
+    final bool isWide = MediaQuery.sizeOf(context).width > AppDimens.breakpoint;
+
+    final Widget heading = Text(
+      label.toUpperCase(),
+      style: context.type.labelSmall?.copyWith(color: tokens.ink),
+    );
+
+    // Tags assemble one at a time — the same stagger idiom as everything else,
+    // applied to a wrap instead of a column.
+    final Widget tags = StaggeredGroup(
+      play: isVisible,
+      initialDelay: const Duration(milliseconds: 260),
+      itemDuration: Motion.base,
+      stagger: const Duration(milliseconds: 45),
+      rise: 10,
+      layout: (List<Widget> children) => Wrap(
+        spacing: AppDimens.spaceSm,
+        runSpacing: AppDimens.spaceSm,
+        children: children,
+      ),
+      children: <Widget>[
+        for (final String item in items) MonoTag(label: item),
+      ],
+    );
+
+    if (!isWide) {
+      return Column(
         crossAxisAlignment: CrossAxisAlignment.start,
-        children: skills.entries
-            .map((e) => SkillBar(name: e.key, level: e.value, isVisible: isVisible))
-            .toList(),
+        children: <Widget>[
+          heading,
+          const SizedBox(height: AppDimens.spaceMd),
+          tags,
+        ],
       );
     }
 
-    return SectionWrapper(title: 'Skills', child: content);
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: <Widget>[
+        SizedBox(width: 220, child: heading),
+        const SizedBox(width: AppDimens.spaceLg),
+        Expanded(child: tags),
+      ],
+    );
   }
 }

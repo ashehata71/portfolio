@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:portfolio/core/motion/motion.dart';
+import 'package:portfolio/core/theme/app_dimens.dart';
+import 'package:portfolio/core/theme/portfolio_tokens.dart';
 
+/// A certificate, in the same card family as [ProjectTile] — same radius, same
+/// hairline, same hover weight — so the two read as one system.
 class CertificateTile extends StatefulWidget {
-  final String title;
-  final String issuer;
-  final String img;
-
   const CertificateTile({
     super.key,
     required this.title,
@@ -12,84 +13,111 @@ class CertificateTile extends StatefulWidget {
     required this.img,
   });
 
+  final String title;
+  final String issuer;
+  final String img;
+
   @override
   State<CertificateTile> createState() => _CertificateTileState();
 }
 
 class _CertificateTileState extends State<CertificateTile>
     with SingleTickerProviderStateMixin {
-  late AnimationController _controller;
-  late Animation<double> _scaleAnimation;
+  late final AnimationController _hover = AnimationController(
+    vsync: this,
+    duration: Motion.fast,
+  );
+  late final CurvedAnimation _eased = CurvedAnimation(
+    parent: _hover,
+    curve: Motion.emphasized,
+  );
 
   @override
-  void initState() {
-    super.initState();
-    _controller = AnimationController(
-      vsync: this,
-      duration: const Duration(milliseconds: 200),
-    );
-    _scaleAnimation = Tween<double>(begin: 1.0, end: 1.05).animate(
-      CurvedAnimation(parent: _controller, curve: Curves.easeInOut),
-    );
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _hover.duration = Motion.resolve(context, Motion.fast);
   }
 
   @override
   void dispose() {
-    _controller.dispose();
+    _eased.dispose();
+    _hover.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
+    final PortfolioTokens tokens = context.tokens;
+
     return MouseRegion(
-      onEnter: (_) => _controller.forward(),
-      onExit: (_) => _controller.reverse(),
-      child: GestureDetector(
-        onTapDown: (_) => _controller.forward(),
-        onTapUp: (_) => _controller.reverse(),
-        onTapCancel: () => _controller.reverse(),
-        child: ScaleTransition(
-          scale: _scaleAnimation,
-          child: Card(
-            color: const Color(0xFF112240),
-            elevation: 4,
-            shadowColor: Colors.black54,
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-            child: Padding(
-              padding: const EdgeInsets.all(20.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  // Certificate title
-                  Text(
-                    widget.title,
-                    style: const TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                      color: Color(0xFFCCD6F6),
-                    ),
-                  ),
-                  const SizedBox(height: 16),
-                  // Certificate image
-                  ClipRRect(
-                    borderRadius: BorderRadius.circular(4),
-                    child: Image.asset(widget.img),
-                  ),
-                  const SizedBox(height: 16),
-                  // Issuer & year
-                  Text(
-                    widget.issuer,
-                    style: const TextStyle(
-                      height: 1.5,
-                      color: Color(0xFF8892B0),
-                      fontStyle: FontStyle.italic,
-                    ),
+      onEnter: (_) => _hover.forward(),
+      onExit: (_) => _hover.reverse(),
+      child: AnimatedBuilder(
+        animation: _eased,
+        child: _CertificateBody(
+          title: widget.title,
+          issuer: widget.issuer,
+          img: widget.img,
+        ),
+        builder: (BuildContext context, Widget? child) {
+          final double t = _eased.value;
+          return Transform.translate(
+            offset: Offset(0, -6 * t),
+            child: DecoratedBox(
+              decoration: BoxDecoration(
+                color: tokens.card,
+                borderRadius: BorderRadius.circular(AppDimens.radiusMd),
+                border: Border.all(
+                  color: Color.lerp(tokens.rule, tokens.signal, t)!,
+                ),
+                boxShadow: <BoxShadow>[
+                  BoxShadow(
+                    color: tokens.ink.withValues(alpha: 0.05 + 0.08 * t),
+                    blurRadius: 12 + 16 * t,
+                    offset: Offset(0, 3 + 9 * t),
                   ),
                 ],
               ),
+              child: child,
+            ),
+          );
+        },
+      ),
+    );
+  }
+}
+
+class _CertificateBody extends StatelessWidget {
+  const _CertificateBody({
+    required this.title,
+    required this.issuer,
+    required this.img,
+  });
+
+  final String title;
+  final String issuer;
+  final String img;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.all(AppDimens.spaceLg),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          Text(issuer.toUpperCase(), style: context.type.labelSmall),
+          const SizedBox(height: AppDimens.spaceSm),
+          Text(title, style: context.type.headlineSmall),
+          const SizedBox(height: AppDimens.spaceMd),
+          ClipRRect(
+            borderRadius: BorderRadius.circular(AppDimens.radiusSm),
+            child: Image.asset(
+              img,
+              semanticLabel: '$title, $issuer',
+              fit: BoxFit.cover,
             ),
           ),
-        ),
+        ],
       ),
     );
   }
