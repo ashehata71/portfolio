@@ -59,7 +59,7 @@ class ContactSection extends StatelessWidget {
           ),
           _ContactRow(
             label: 'LinkedIn',
-            value: 'linkedin.com/in/ahmed-yasser',
+            value: 'linkedin.com/in/ahmed-shehata',
             onTap: () => onLaunch(
               'https://www.linkedin.com/in/ahmed-shehata-7a7a40160/',
             ),

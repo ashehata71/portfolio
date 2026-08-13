@@ -29,7 +29,7 @@ jobs:
         run: flutter pub get
 
       - name: Build for web ⚙️
-        # This command is now updated with your repository name
+          # This command is now updated with your repository name
         run: flutter build web --release --base-href /portfolio/ --web-renderer canvaskit --no-tree-shake-icons
 
       - name: Upload artifact 📦
