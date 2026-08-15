@@ -2,15 +2,25 @@ import 'package:flutter/material.dart';
 import 'package:portfolio/core/apps/portfolio_app.dart';
 import 'package:portfolio/core/motion/motion.dart';
 import 'package:portfolio/core/theme/app_dimens.dart';
+import 'package:portfolio/presentation/widgets/module_spotlight.dart';
 import 'package:portfolio/presentation/widgets/project_tile.dart';
+import 'package:portfolio/presentation/widgets/reuse_graph.dart';
 import 'package:portfolio/presentation/widgets/section_wrapper.dart';
 
 /// Shipped work. Deliberately unnumbered — this is an index, not a sequence,
 /// so nothing here implies an order the reader has to follow.
+///
+/// The OCR SDK leads as a [ModuleSpotlight] rather than as one tile among
+/// seven: it is the only item whose claim is *reuse*, and the [ReuseGraph]
+/// is the proof. It routes when the section scrolls into view, so the
+/// diagram animates where the reader is actually looking.
 class ProjectsSection extends StatelessWidget {
   const ProjectsSection({super.key, required this.isVisible});
 
   final bool isVisible;
+
+  static const String _ocrCaption =
+      'Built from scratch in one app. Now shipping in every ValU app.';
 
   List<Widget> _tiles() => <Widget>[
         ProjectTile(
@@ -31,22 +41,6 @@ class ProjectsSection extends StatelessWidget {
           ),
           appStoreOnPressed: () =>
               launchURLByURL('https://apps.apple.com/eg/app/valu/id1199345579'),
-        ),
-        const ProjectTile(
-          title: 'OCR SDK',
-          org: 'ValU',
-          badge: 'Internal SDK',
-          description:
-              'Document scanning and data extraction, built from scratch. First '
-              'integrated in the Sales Egypt app, then adopted company-wide across '
-              'all ValU applications.',
-          tech: <String>['Flutter', 'Android', 'iOS'],
-          usedBy: <String>[
-            'ValU Customer',
-            'Sales Egypt',
-            'Sales Jordan',
-            'Every ValU app',
-          ],
         ),
         const ProjectTile(
           title: 'Crowdin Localization SDK',
@@ -120,28 +114,70 @@ class ProjectsSection extends StatelessWidget {
         ),
       ];
 
+  /// The section's lead item: the module, and the apps that import it.
+  Widget _spotlight() => ModuleSpotlight(
+        title: 'OCR SDK',
+        org: 'ValU',
+        badge: 'Internal SDK',
+        description:
+            'Document scanning and data extraction, built from scratch. First '
+            'integrated in the Sales Egypt app, then adopted company-wide '
+            'across all ValU applications.',
+        tech: const <String>['Flutter', 'Android', 'iOS'],
+        caption: _ocrCaption,
+        diagram: ReuseGraph(
+          play: isVisible,
+          source: 'OCR SDK',
+          sourceKicker: 'Built once',
+          consumers: const <String>[
+            'ValU Customer',
+            'Sales Egypt',
+            'Sales Jordan',
+            'Every ValU app',
+          ],
+          description:
+              'Diagram: the OCR SDK Ahmed built from scratch in the ValU Sales '
+              'Egypt app is now imported by the ValU Customer app, Sales '
+              'Egypt, Sales Jordan, and every other ValU application.',
+        ),
+      );
+
   @override
   Widget build(BuildContext context) {
     final bool isWide = MediaQuery.sizeOf(context).width > AppDimens.breakpoint;
     final List<Widget> tiles = _tiles();
+
+    // The spotlight lands first; the grid follows it in.
+    final Widget lead = StaggeredGroup(
+      play: isVisible,
+      initialDelay: const Duration(milliseconds: 120),
+      children: <Widget>[_spotlight()],
+    );
 
     if (!isWide) {
       return SectionWrapper(
         title: 'Selected work',
         meta: '7 shipped',
         isVisible: isVisible,
-        child: StaggeredGroup(
-          play: isVisible,
-          initialDelay: const Duration(milliseconds: 180),
-          stagger: const Duration(milliseconds: 100),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
-            for (int i = 0; i < tiles.length; i++)
-              Padding(
-                padding: EdgeInsets.only(
-                  bottom: i == tiles.length - 1 ? 0 : AppDimens.spaceMd,
-                ),
-                child: tiles[i],
-              ),
+            lead,
+            const SizedBox(height: AppDimens.spaceLg),
+            StaggeredGroup(
+              play: isVisible,
+              initialDelay: const Duration(milliseconds: 300),
+              stagger: const Duration(milliseconds: 100),
+              children: <Widget>[
+                for (int i = 0; i < tiles.length; i++)
+                  Padding(
+                    padding: EdgeInsets.only(
+                      bottom: i == tiles.length - 1 ? 0 : AppDimens.spaceMd,
+                    ),
+                    child: tiles[i],
+                  ),
+              ],
+            ),
           ],
         ),
       );
@@ -164,25 +200,32 @@ class ProjectsSection extends StatelessWidget {
       title: 'Selected work',
       meta: '7 shipped',
       isVisible: isVisible,
-      child: Row(
+      child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
-          Expanded(
-            child: StaggeredGroup(
-              play: isVisible,
-              initialDelay: const Duration(milliseconds: 180),
-              stagger: const Duration(milliseconds: 100),
-              children: left,
-            ),
-          ),
-          const SizedBox(width: AppDimens.spaceMd),
-          Expanded(
-            child: StaggeredGroup(
-              play: isVisible,
-              initialDelay: const Duration(milliseconds: 230),
-              stagger: const Duration(milliseconds: 100),
-              children: right,
-            ),
+          lead,
+          const SizedBox(height: AppDimens.spaceXl),
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              Expanded(
+                child: StaggeredGroup(
+                  play: isVisible,
+                  initialDelay: const Duration(milliseconds: 300),
+                  stagger: const Duration(milliseconds: 100),
+                  children: left,
+                ),
+              ),
+              const SizedBox(width: AppDimens.spaceMd),
+              Expanded(
+                child: StaggeredGroup(
+                  play: isVisible,
+                  initialDelay: const Duration(milliseconds: 350),
+                  stagger: const Duration(milliseconds: 100),
+                  children: right,
+                ),
+              ),
+            ],
           ),
         ],
       ),

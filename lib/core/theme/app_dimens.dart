@@ -14,6 +14,14 @@ abstract final class AppDimens {
   /// Horizontal page gutter.
   static const double gutter = 24;
 
+  /// Measure for the hero statement column. The hero runs as a single
+  /// left-aligned block, so the display type is capped here rather than by a
+  /// facing column.
+  static const double heroMeasure = 780;
+
+  /// Comfortable reading measure for a paragraph of body copy.
+  static const double proseMeasure = 620;
+
   // ── Spacing scale ────────────────────────────────────────────────────────
   static const double spaceXs = 4;
   static const double spaceSm = 8;

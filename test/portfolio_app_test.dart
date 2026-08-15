@@ -3,6 +3,8 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:portfolio/core/apps/portfolio_app.dart';
 import 'package:portfolio/presentation/widgets/reuse_graph.dart';
+import 'package:portfolio/presentation/widgets/sections/hero_section.dart';
+import 'package:portfolio/presentation/widgets/sections/projects_section.dart';
 
 /// Pumps the page at [size], optionally with animations disabled.
 Future<void> pumpPortfolio(
@@ -44,14 +46,54 @@ void main() {
       expect(find.textContaining('Mobile Application Developer'), findsNothing);
     });
 
-    testWidgets('renders the reuse graph as the signature element', (
+    testWidgets(
+        'carries the copy alone — the diagram moved to the work '
+        'section', (WidgetTester tester) async {
+      await pumpPortfolio(tester);
+      await tester.pump();
+
+      expect(find.textContaining('I build the code'), findsOneWidget);
+      expect(
+        find.descendant(
+          of: find.byType(HeroSection),
+          matching: find.byType(ReuseGraph),
+        ),
+        findsNothing,
+        reason: 'the reuse graph now belongs to the work section',
+      );
+    });
+  });
+
+  group('work', () {
+    testWidgets('leads with the reuse graph as the signature element', (
       WidgetTester tester,
     ) async {
       await pumpPortfolio(tester);
       await tester.pump();
 
-      expect(find.byType(ReuseGraph), findsOneWidget);
+      expect(
+        find.descendant(
+          of: find.byType(ProjectsSection),
+          matching: find.byType(ReuseGraph),
+        ),
+        findsOneWidget,
+      );
       expect(find.text('OCR SDK'), findsWidgets);
+    });
+
+    testWidgets('states the OCR SDK once, not twice', (
+      WidgetTester tester,
+    ) async {
+      await pumpPortfolio(tester);
+      await tester.pump();
+
+      // The spotlight replaced the tile it used to duplicate. (The name still
+      // appears as a tech chip on the Sales Jordan tile, which is a different
+      // claim — that app consumes it.)
+      expect(
+        find.textContaining('Document scanning and data extraction'),
+        findsOneWidget,
+      );
     });
   });
 
@@ -115,6 +157,22 @@ void main() {
 
       expect(find.textContaining('I build the code'), findsOneWidget);
       expect(find.byType(ReuseGraph), findsOneWidget);
+    });
+  });
+
+  group('OCR SDK spotlight', () {
+    testWidgets('keeps the graph subtext with the graph', (
+      WidgetTester tester,
+    ) async {
+      await pumpPortfolio(tester, disableAnimations: true);
+      await tester.pump();
+      await tester.pump();
+
+      expect(
+        find.textContaining('Now shipping in every ValU app'),
+        findsOneWidget,
+      );
+      expect(find.text('Built once'.toUpperCase()), findsOneWidget);
     });
   });
 

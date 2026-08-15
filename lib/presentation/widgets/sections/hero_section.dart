@@ -5,13 +5,13 @@ import 'package:portfolio/core/theme/app_dimens.dart';
 import 'package:portfolio/core/theme/app_typography.dart';
 import 'package:portfolio/core/theme/portfolio_tokens.dart';
 import 'package:portfolio/presentation/widgets/icon_link.dart';
-import 'package:portfolio/presentation/widgets/reuse_graph.dart';
 
 /// The page's thesis: Ahmed's code is a dependency other apps import.
 ///
-/// The left column states it; the [ReuseGraph] on the right proves it by
-/// routing itself outward on load. Both start on the first frame after mount,
-/// so the copy and the diagram arrive on one rhythm.
+/// One left-aligned column on the page's own axis — the same axis every
+/// section rule below it draws from — held to [AppDimens.heroMeasure] and set
+/// at a size that fills that measure. The proof lives in the work section,
+/// where the reuse diagram now sits beside the module it describes.
 class HeroSection extends StatefulWidget {
   const HeroSection({super.key, required this.onLaunch});
 
@@ -32,8 +32,6 @@ class _HeroSectionState extends State<HeroSection> {
       'financial super-apps used by hundreds of thousands of people, plus the '
       'internal SDKs their teams now build on. Clean Architecture, Melos '
       'modules, and native Android and iOS where it counts.';
-  static const String _graphCaption =
-      'Built from scratch in one app. Now shipping in every ValU app.';
 
   bool _play = false;
 
@@ -51,35 +49,22 @@ class _HeroSectionState extends State<HeroSection> {
   Widget build(BuildContext context) {
     final bool isWide = MediaQuery.sizeOf(context).width > AppDimens.breakpoint;
 
-    final Widget copy = _HeroCopy(
-      play: _play,
-      isWide: isWide,
-      onLaunch: widget.onLaunch,
-    );
-    final Widget graph = _HeroGraph(play: _play, caption: _graphCaption);
-
     return Padding(
       padding: EdgeInsets.only(
-        top: isWide ? 96 : 56,
+        top: isWide ? 112 : 56,
         bottom: isWide ? AppDimens.spaceXxl : AppDimens.spaceXl,
       ),
-      child: isWide
-          ? Row(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: <Widget>[
-                Expanded(flex: 6, child: copy),
-                const SizedBox(width: AppDimens.spaceXxl),
-                Expanded(flex: 5, child: graph),
-              ],
-            )
-          : Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                copy,
-                const SizedBox(height: AppDimens.spaceXxl),
-                graph,
-              ],
-            ),
+      child: Align(
+        alignment: Alignment.centerLeft,
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(maxWidth: AppDimens.heroMeasure),
+          child: _HeroCopy(
+            play: _play,
+            isWide: isWide,
+            onLaunch: widget.onLaunch,
+          ),
+        ),
+      ),
     );
   }
 }
@@ -120,14 +105,15 @@ class _HeroCopy extends StatelessWidget {
         Text(
           _HeroSectionState._statement,
           style: AppTypography.display(
-            fontSize: isWide ? 54 : 32,
+            // Sized to fill the hero measure now that nothing faces it.
+            fontSize: isWide ? 64 : 32,
             color: tokens.ink,
             height: 1.06,
           ),
         ),
         const SizedBox(height: AppDimens.spaceLg),
         ConstrainedBox(
-          constraints: const BoxConstraints(maxWidth: 560),
+          constraints: const BoxConstraints(maxWidth: AppDimens.proseMeasure),
           child:
               Text(_HeroSectionState._summary, style: context.type.bodyMedium),
         ),
@@ -176,39 +162,6 @@ class _HeroLinks extends StatelessWidget {
           label: 'Call Ahmed on +20 155 081 9605',
           onTap: () => onLaunch('tel:+201550819605'),
         ),
-      ],
-    );
-  }
-}
-
-class _HeroGraph extends StatelessWidget {
-  const _HeroGraph({required this.play, required this.caption});
-
-  final bool play;
-  final String caption;
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: <Widget>[
-        ReuseGraph(
-          play: play,
-          source: 'OCR SDK',
-          sourceKicker: 'Built once',
-          consumers: const <String>[
-            'ValU Customer',
-            'Sales Egypt',
-            'Sales Jordan',
-            'Every ValU app',
-          ],
-          description:
-              'Diagram: the OCR SDK Ahmed built from scratch in the ValU Sales '
-              'Egypt app is now imported by the ValU Customer app, Sales '
-              'Egypt, Sales Jordan, and every other ValU application.',
-        ),
-        const SizedBox(height: AppDimens.spaceLg),
-        Text(caption, style: context.type.labelMedium),
       ],
     );
   }

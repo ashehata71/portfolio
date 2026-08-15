@@ -14,6 +14,10 @@ import 'package:portfolio/core/theme/portfolio_tokens.dart';
 ///
 /// This is the only place on the page that spends motion loudly. Everything
 /// around it stays still.
+///
+/// Sizing comes from the box the graph is handed, not from the window — it
+/// sits inside a card inside a section, so the page breakpoint says nothing
+/// useful about how much room it actually has.
 class ReuseGraph extends StatefulWidget {
   const ReuseGraph({
     super.key,
@@ -67,6 +71,9 @@ class _ReuseGraphState extends State<ReuseGraph> with TickerProviderStateMixin {
   static const double _edgeStart = 0.16;
   static const double _edgeStep = 0.07;
   static const double _edgeSpan = 0.34;
+
+  /// Width below which the graph switches to its compact metrics.
+  static const double _tightWidth = 340;
 
   @override
   void initState() {
@@ -153,9 +160,6 @@ class _ReuseGraphState extends State<ReuseGraph> with TickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
     final PortfolioTokens tokens = context.tokens;
-    final bool isWide = MediaQuery.sizeOf(context).width > AppDimens.breakpoint;
-    final double rowHeight = isWide ? 56 : 48;
-    final double labelSize = isWide ? 12 : 11;
 
     return Semantics(
       label: widget.description,
@@ -166,10 +170,19 @@ class _ReuseGraphState extends State<ReuseGraph> with TickerProviderStateMixin {
         child: LayoutBuilder(
           builder: (BuildContext context, BoxConstraints constraints) {
             final double width = constraints.maxWidth;
+            // Below this the fan has to give up padding and type size to keep
+            // a readable horizontal run.
+            final bool tight = width < _tightWidth;
+            final double rowHeight = tight ? 46 : 56;
+            final double labelSize = tight ? 10.5 : 12;
+            final double nodePadding =
+                tight ? AppDimens.spaceSm : AppDimens.spaceMd;
+
             final double sourceWidth = math.min(158, width * 0.38);
             // The fan needs a real horizontal run to read as routing rather
             // than as a bracket.
-            final double destLeft = sourceWidth + math.max(56, width * 0.18);
+            final double destLeft =
+                sourceWidth + math.max(tight ? 44 : 56, width * 0.18);
             final double height = widget.consumers.length * rowHeight;
             final double sourceY = height / 2;
 
@@ -235,6 +248,7 @@ class _ReuseGraphState extends State<ReuseGraph> with TickerProviderStateMixin {
                         child: _ConsumerNode(
                           label: widget.consumers[i],
                           labelSize: labelSize,
+                          horizontalPadding: nodePadding,
                         ),
                       ),
                     ),
@@ -312,18 +326,23 @@ class _SourceNode extends StatelessWidget {
 }
 
 class _ConsumerNode extends StatelessWidget {
-  const _ConsumerNode({required this.label, required this.labelSize});
+  const _ConsumerNode({
+    required this.label,
+    required this.labelSize,
+    required this.horizontalPadding,
+  });
 
   final String label;
   final double labelSize;
+  final double horizontalPadding;
 
   @override
   Widget build(BuildContext context) {
     final PortfolioTokens tokens = context.tokens;
 
     return Container(
-      padding: const EdgeInsets.symmetric(
-        horizontal: AppDimens.spaceMd,
+      padding: EdgeInsets.symmetric(
+        horizontal: horizontalPadding,
         vertical: AppDimens.spaceSm,
       ),
       decoration: BoxDecoration(
