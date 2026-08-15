@@ -17,8 +17,11 @@ class PortfolioTokens extends ThemeExtension<PortfolioTokens> {
     required this.signal,
     required this.signalSoft,
     required this.onSignal,
+    required this.shadow,
   });
 
+  /// The light set. Kept as the default so a widget built without a theme
+  /// still renders something legible.
   const PortfolioTokens.standard()
       : paper = AppColors.paper,
         paperSunken = AppColors.paperSunken,
@@ -28,7 +31,21 @@ class PortfolioTokens extends ThemeExtension<PortfolioTokens> {
         inkMuted = AppColors.inkMuted,
         signal = AppColors.signal,
         signalSoft = AppColors.signalSoft,
-        onSignal = AppColors.onSignal;
+        onSignal = AppColors.onSignal,
+        shadow = AppColors.shadow;
+
+  /// The dark set. Same semantics, same relationships, different ground.
+  const PortfolioTokens.dark()
+      : paper = AppColors.darkPaper,
+        paperSunken = AppColors.darkPaperSunken,
+        card = AppColors.darkCard,
+        rule = AppColors.darkRule,
+        ink = AppColors.darkInk,
+        inkMuted = AppColors.darkInkMuted,
+        signal = AppColors.darkSignal,
+        signalSoft = AppColors.darkSignalSoft,
+        onSignal = AppColors.darkOnSignal,
+        shadow = AppColors.darkShadow;
 
   /// Page background.
   final Color paper;
@@ -57,10 +74,14 @@ class PortfolioTokens extends ThemeExtension<PortfolioTokens> {
   /// Foreground on top of [signal].
   final Color onSignal;
 
+  /// What raised-surface shadows are tinted with. Never [ink] — that inverts
+  /// to near-white in the dark theme and haloes every card.
+  final Color shadow;
+
   /// Resting shadow for raised surfaces.
   List<BoxShadow> get restShadow => <BoxShadow>[
         BoxShadow(
-          color: ink.withValues(alpha: 0.05),
+          color: shadow.withValues(alpha: 0.05),
           blurRadius: 12,
           offset: const Offset(0, 3),
         ),
@@ -69,9 +90,19 @@ class PortfolioTokens extends ThemeExtension<PortfolioTokens> {
   /// Shadow at full hover lift. Lerp between this and [restShadow].
   List<BoxShadow> get liftShadow => <BoxShadow>[
         BoxShadow(
-          color: ink.withValues(alpha: 0.13),
+          color: shadow.withValues(alpha: 0.13),
           blurRadius: 28,
           offset: const Offset(0, 12),
+        ),
+      ];
+
+  /// Shadow for a surface lifted [t] of the way from rest to full hover.
+  /// Shared so tiles don't each re-derive the ramp.
+  List<BoxShadow> liftShadowAt(double t) => <BoxShadow>[
+        BoxShadow(
+          color: shadow.withValues(alpha: 0.05 + 0.08 * t),
+          blurRadius: 12 + 16 * t,
+          offset: Offset(0, 3 + 9 * t),
         ),
       ];
 
@@ -86,6 +117,7 @@ class PortfolioTokens extends ThemeExtension<PortfolioTokens> {
     Color? signal,
     Color? signalSoft,
     Color? onSignal,
+    Color? shadow,
   }) {
     return PortfolioTokens(
       paper: paper ?? this.paper,
@@ -97,6 +129,7 @@ class PortfolioTokens extends ThemeExtension<PortfolioTokens> {
       signal: signal ?? this.signal,
       signalSoft: signalSoft ?? this.signalSoft,
       onSignal: onSignal ?? this.onSignal,
+      shadow: shadow ?? this.shadow,
     );
   }
 
@@ -113,6 +146,7 @@ class PortfolioTokens extends ThemeExtension<PortfolioTokens> {
       signal: Color.lerp(signal, other.signal, t)!,
       signalSoft: Color.lerp(signalSoft, other.signalSoft, t)!,
       onSignal: Color.lerp(onSignal, other.onSignal, t)!,
+      shadow: Color.lerp(shadow, other.shadow, t)!,
     );
   }
 }

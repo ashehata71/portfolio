@@ -45,50 +45,60 @@ abstract final class AppTypography {
     );
   }
 
-  static TextTheme textTheme() {
+  /// The scale, inked for one brightness. [ink] carries headings and
+  /// high-emphasis text, [inkMuted] body and utility text — the two roles the
+  /// palette defines, passed in so the same scale serves both themes.
+  static TextTheme textTheme({
+    Color ink = AppColors.ink,
+    Color inkMuted = AppColors.inkMuted,
+  }) {
     final TextTheme body = GoogleFonts.ibmPlexSansTextTheme();
 
     return TextTheme(
       // ── Display: Bricolage Grotesque ──────────────────────────────────────
-      displayLarge: display(fontSize: 60),
-      displayMedium: display(fontSize: 44),
-      displaySmall: display(fontSize: 34),
-      headlineLarge: display(fontSize: 30, fontWeight: FontWeight.w600),
-      headlineMedium: display(fontSize: 24, fontWeight: FontWeight.w600),
-      headlineSmall: display(fontSize: 20, fontWeight: FontWeight.w600),
-      titleLarge: display(fontSize: 18, fontWeight: FontWeight.w600),
+      displayLarge: display(fontSize: 60, color: ink),
+      displayMedium: display(fontSize: 44, color: ink),
+      displaySmall: display(fontSize: 34, color: ink),
+      headlineLarge:
+          display(fontSize: 30, fontWeight: FontWeight.w600, color: ink),
+      headlineMedium:
+          display(fontSize: 24, fontWeight: FontWeight.w600, color: ink),
+      headlineSmall:
+          display(fontSize: 20, fontWeight: FontWeight.w600, color: ink),
+      titleLarge:
+          display(fontSize: 18, fontWeight: FontWeight.w600, color: ink),
 
       // ── Body: IBM Plex Sans ───────────────────────────────────────────────
       titleMedium: body.titleMedium?.copyWith(
         fontSize: 16,
         fontWeight: FontWeight.w600,
-        color: AppColors.ink,
+        color: ink,
       ),
       titleSmall: body.titleSmall?.copyWith(
         fontSize: 14,
         fontWeight: FontWeight.w600,
-        color: AppColors.ink,
+        color: ink,
       ),
       bodyLarge: body.bodyLarge?.copyWith(
         fontSize: 17,
         height: 1.6,
-        color: AppColors.inkMuted,
+        color: inkMuted,
       ),
       bodyMedium: body.bodyMedium?.copyWith(
         fontSize: 16,
         height: 1.6,
-        color: AppColors.inkMuted,
+        color: inkMuted,
       ),
       bodySmall: body.bodySmall?.copyWith(
         fontSize: 16,
         height: 1.5,
-        color: AppColors.inkMuted,
+        color: inkMuted,
       ),
 
       // ── Utility: IBM Plex Mono ────────────────────────────────────────────
-      labelLarge: mono(fontSize: 13, color: AppColors.ink),
-      labelMedium: mono(fontSize: 12),
-      labelSmall: mono(fontSize: 11, letterSpacing: 1.1),
+      labelLarge: mono(fontSize: 13, color: ink),
+      labelMedium: mono(fontSize: 12, color: inkMuted),
+      labelSmall: mono(fontSize: 11, letterSpacing: 1.1, color: inkMuted),
     );
   }
 }

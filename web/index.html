@@ -31,6 +31,25 @@
 
   <title>portfolio</title>
   <link rel="manifest" href="manifest.json">
+
+  <!--
+    Painted before Flutter boots, so the gap between first paint and first
+    frame is the page's own background rather than a white flash. Follows the
+    OS setting; a visitor who has overridden it in-page may see this for the
+    fraction of a second before their stored choice is restored.
+  -->
+  <meta name="theme-color" content="#E7E7E2" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#16161A" media="(prefers-color-scheme: dark)">
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      background-color: #E7E7E2;
+    }
+    @media (prefers-color-scheme: dark) {
+      html, body { background-color: #16161A; }
+    }
+  </style>
 </head>
 <body>
   <script src="flutter_bootstrap.js" async></script>

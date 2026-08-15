@@ -1,66 +1,91 @@
 import 'package:flutter/material.dart';
-import 'package:portfolio/core/theme/app_colors.dart';
 import 'package:portfolio/core/theme/app_dimens.dart';
 import 'package:portfolio/core/theme/app_typography.dart';
 import 'package:portfolio/core/theme/portfolio_tokens.dart';
 
-/// Assembles the single theme the portfolio ships.
+/// Assembles the two themes the portfolio ships.
+///
+/// Both come out of [_build], off a [PortfolioTokens] set — there is no
+/// second copy of the widget theming to keep in sync, so the only thing that
+/// differs between light and dark is the palette itself.
 abstract final class AppTheme {
-  static ThemeData build() {
-    final TextTheme textTheme = AppTypography.textTheme();
+  static ThemeData light() => _build(
+        brightness: Brightness.light,
+        tokens: const PortfolioTokens.standard(),
+      );
+
+  static ThemeData dark() => _build(
+        brightness: Brightness.dark,
+        tokens: const PortfolioTokens.dark(),
+      );
+
+  static ThemeData _build({
+    required Brightness brightness,
+    required PortfolioTokens tokens,
+  }) {
+    final TextTheme textTheme = AppTypography.textTheme(
+      ink: tokens.ink,
+      inkMuted: tokens.inkMuted,
+    );
 
     return ThemeData(
-      brightness: Brightness.light,
-      scaffoldBackgroundColor: AppColors.paper,
+      brightness: brightness,
+      scaffoldBackgroundColor: tokens.paper,
       textTheme: textTheme,
-      extensions: const <ThemeExtension<dynamic>>[PortfolioTokens.standard()],
-      colorScheme: const ColorScheme.light(
-        primary: AppColors.signal,
-        onPrimary: AppColors.onSignal,
-        secondary: AppColors.ink,
-        onSecondary: AppColors.paper,
-        surface: AppColors.card,
-        onSurface: AppColors.ink,
-        outline: AppColors.rule,
+      extensions: <ThemeExtension<dynamic>>[tokens],
+      // Built off the Material base for this brightness so the roles nothing
+      // on the page names — error, and the ink/focus colours Material derives
+      // from them — stay sane without inventing literals for them here.
+      colorScheme: (brightness == Brightness.light
+              ? const ColorScheme.light()
+              : const ColorScheme.dark())
+          .copyWith(
+        primary: tokens.signal,
+        onPrimary: tokens.onSignal,
+        secondary: tokens.ink,
+        onSecondary: tokens.paper,
+        surface: tokens.card,
+        onSurface: tokens.ink,
+        outline: tokens.rule,
       ),
       // Material's default ink splash reads as a foreign flourish on a page
       // this quiet; interaction feedback is handled explicitly instead.
       splashFactory: NoSplash.splashFactory,
       highlightColor: Colors.transparent,
       hoverColor: Colors.transparent,
-      dividerTheme: const DividerThemeData(
-        color: AppColors.rule,
+      dividerTheme: DividerThemeData(
+        color: tokens.rule,
         thickness: 1,
         space: 1,
       ),
       appBarTheme: AppBarTheme(
-        backgroundColor: AppColors.paper.withValues(alpha: 0.88),
+        backgroundColor: tokens.paper.withValues(alpha: 0.88),
         surfaceTintColor: Colors.transparent,
-        foregroundColor: AppColors.ink,
+        foregroundColor: tokens.ink,
         elevation: 0,
         scrolledUnderElevation: 0,
         centerTitle: false,
       ),
-      drawerTheme: const DrawerThemeData(
-        backgroundColor: AppColors.card,
+      drawerTheme: DrawerThemeData(
+        backgroundColor: tokens.card,
         surfaceTintColor: Colors.transparent,
-        shape: RoundedRectangleBorder(),
+        shape: const RoundedRectangleBorder(),
       ),
       cardTheme: CardThemeData(
-        color: AppColors.card,
+        color: tokens.card,
         elevation: 0,
         margin: EdgeInsets.zero,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(AppDimens.radiusMd),
-          side: const BorderSide(color: AppColors.rule),
+          side: BorderSide(color: tokens.rule),
         ),
       ),
       tooltipTheme: TooltipThemeData(
         decoration: BoxDecoration(
-          color: AppColors.ink,
+          color: tokens.ink,
           borderRadius: BorderRadius.circular(AppDimens.radiusSm),
         ),
-        textStyle: AppTypography.mono(color: AppColors.paper, fontSize: 11),
+        textStyle: AppTypography.mono(color: tokens.paper, fontSize: 11),
       ),
     );
   }

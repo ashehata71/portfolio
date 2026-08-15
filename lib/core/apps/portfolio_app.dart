@@ -3,6 +3,7 @@ import 'package:portfolio/core/motion/motion.dart';
 import 'package:portfolio/core/theme/app_dimens.dart';
 import 'package:portfolio/core/theme/app_theme.dart';
 import 'package:portfolio/core/theme/portfolio_tokens.dart';
+import 'package:portfolio/core/theme/theme_controller.dart';
 import 'package:portfolio/presentation/widgets/nav_rail.dart';
 import 'package:portfolio/presentation/widgets/sections/about_section.dart';
 import 'package:portfolio/presentation/widgets/sections/certificates_section.dart';
@@ -11,20 +12,48 @@ import 'package:portfolio/presentation/widgets/sections/experience_section.dart'
 import 'package:portfolio/presentation/widgets/sections/hero_section.dart';
 import 'package:portfolio/presentation/widgets/sections/projects_section.dart';
 import 'package:portfolio/presentation/widgets/sections/skills_section.dart';
+import 'package:portfolio/presentation/widgets/theme_toggle.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 // ─── App entry widget ───────────────────────────────────────────────────────
 
-class PortfolioApp extends StatelessWidget {
-  const PortfolioApp({super.key});
+class PortfolioApp extends StatefulWidget {
+  const PortfolioApp({super.key, this.themeController});
+
+  /// Owns the light/dark choice. Optional so a test can pump the page without
+  /// standing up platform storage; `main` injects one that persists.
+  final ThemeController? themeController;
+
+  @override
+  State<PortfolioApp> createState() => _PortfolioAppState();
+}
+
+class _PortfolioAppState extends State<PortfolioApp> {
+  late final ThemeController _controller =
+      widget.themeController ?? ThemeController(store: InMemoryThemeStore());
+
+  /// Only a controller this widget made is a controller this widget may
+  /// dispose.
+  bool get _ownsController => widget.themeController == null;
+
+  @override
+  void dispose() {
+    if (_ownsController) _controller.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Ahmed Yasser — Senior Flutter Developer',
-      debugShowCheckedModeBanner: false,
-      theme: AppTheme.build(),
-      home: const PortfolioHomePage(),
+    return AnimatedBuilder(
+      animation: _controller,
+      builder: (BuildContext context, _) => MaterialApp(
+        title: 'Ahmed Yasser — Senior Flutter Developer',
+        debugShowCheckedModeBanner: false,
+        theme: AppTheme.light(),
+        darkTheme: AppTheme.dark(),
+        themeMode: _controller.mode,
+        home: PortfolioHomePage(themeController: _controller),
+      ),
     );
   }
 }
@@ -54,7 +83,9 @@ abstract final class SectionKeys {
 }
 
 class PortfolioHomePage extends StatefulWidget {
-  const PortfolioHomePage({super.key});
+  const PortfolioHomePage({super.key, required this.themeController});
+
+  final ThemeController themeController;
 
   @override
   State<PortfolioHomePage> createState() => _PortfolioHomePageState();
@@ -176,14 +207,27 @@ class _PortfolioHomePageState extends State<PortfolioHomePage> {
         ),
         actions: <Widget>[
           if (isWide)
-            Padding(
-              padding: const EdgeInsets.only(right: AppDimens.spaceMd),
-              child: NavRail(
-                items: _navItems,
-                activeKey: _activeSection,
-                onSelect: _scrollToSection,
+            NavRail(
+              items: _navItems,
+              activeKey: _activeSection,
+              onSelect: _scrollToSection,
+            ),
+          // Present at both widths: on narrow the nav hides behind the drawer,
+          // but the theme is a property of the page, not of the navigation.
+          Padding(
+            padding: const EdgeInsets.only(
+              left: AppDimens.spaceMd,
+              right: AppDimens.spaceMd,
+            ),
+            child: ThemeToggle(
+              isDark: widget.themeController.showsDark(
+                MediaQuery.platformBrightnessOf(context),
+              ),
+              onToggle: () => widget.themeController.toggle(
+                MediaQuery.platformBrightnessOf(context),
               ),
             ),
+          ),
         ],
       ),
       drawer: isWide

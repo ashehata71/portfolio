@@ -70,13 +70,7 @@ class _CertificateTileState extends State<CertificateTile>
                 border: Border.all(
                   color: Color.lerp(tokens.rule, tokens.signal, t)!,
                 ),
-                boxShadow: <BoxShadow>[
-                  BoxShadow(
-                    color: tokens.ink.withValues(alpha: 0.05 + 0.08 * t),
-                    blurRadius: 12 + 16 * t,
-                    offset: Offset(0, 3 + 9 * t),
-                  ),
-                ],
+                boxShadow: tokens.liftShadowAt(t),
               ),
               child: child,
             ),
