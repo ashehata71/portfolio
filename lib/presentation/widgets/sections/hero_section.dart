@@ -149,7 +149,7 @@ class _HeroLinks extends StatelessWidget {
           icon: FontAwesomeIcons.linkedinIn,
           label: 'Ahmed on LinkedIn',
           onTap: () => onLaunch(
-            'https://www.linkedin.com/in/ahmed-shehata-7a7a40160/',
+            'https://www.linkedin.com/in/ahmedshehata-flutter/',
           ),
         ),
         IconLink(

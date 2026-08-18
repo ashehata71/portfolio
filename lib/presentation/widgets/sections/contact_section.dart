@@ -59,9 +59,9 @@ class ContactSection extends StatelessWidget {
           ),
           _ContactRow(
             label: 'LinkedIn',
-            value: 'linkedin.com/in/ahmed-shehata',
+            value: 'linkedin.com/in/ahmedshehata-flutter',
             onTap: () => onLaunch(
-              'https://www.linkedin.com/in/ahmed-shehata-7a7a40160/',
+              'https://www.linkedin.com/in/ahmedshehata-flutter/',
             ),
             isLast: true,
           ),
