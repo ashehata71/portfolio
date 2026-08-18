@@ -1,11 +1,11 @@
 {
-    "name": "portfolio",
-    "short_name": "portfolio",
+    "name": "Ahmed Yasser — Senior Flutter Developer",
+    "short_name": "Ahmed Yasser",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#E7E7E2",
     "theme_color": "#E7E7E2",
-    "description": "Flutter Portfolio",
+    "description": "Senior Flutter Developer in Cairo. Five-plus years shipping Flutter to production — BNPL and financial super-apps, plus the internal SDKs their teams build on.",
     "orientation": "portrait-primary",
     "prefer_related_applications": false,
     "icons": [
